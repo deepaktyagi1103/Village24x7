@@ -1,0 +1,100 @@
+.customShadow{
+        box-shadow: 0px 0px 10px rgba(0, 0, 0,0.2);
+}
+/** user tables**/
+.userTable{
+        @apply bg-white
+    }
+    .userTable th{
+        @apply border text-base font-medium
+    }
+    
+    .userTable td{
+        @apply border text-base text-center
+    }
+    /*Scroll Hidden*/
+    .scrollbar-none::-webkit-scrollbar{
+        display: none;
+    }
+    .vegbox {
+        height: 300px;
+        width: 300px;
+        background-image: url('../src/assets/le.png');
+        background-repeat: no-repeat;
+        background-size: 62% 50%;
+        background-position: center 120px;
+    }
+    
+    .vegbox2 {
+        height: 300px;
+        width: 300px;
+        background-image: url('../src/assets/tom.png');
+        background-repeat: no-repeat;
+        background-size: 44% 44%;
+        background-position: center 125px;
+    }
+    
+    .vegbox3 {
+        height: 300px;
+        width: 300px;
+        background-image: url('../src/assets/pen.jpeg');
+        background-repeat: no-repeat;
+        background-size: 80% 60%;
+        background-position: center 90px;
+    }
+    
+    .vegbtn {
+        @apply rounded-lg bg-green-500 text-white font-bold text-sm py-2 px-4 transition duration-300;
+    }
+    
+    .vegbtn:hover {
+        @apply bg-green-700;
+    }
+    .list-items {
+        position: relative;
+        display: block;
+        color: #000;
+        transition: 1s;
+      }
+      
+      .list-items:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transform: scaleY(2);
+        transition: 1s;
+        border-top: 2px solid rgb(17, 58, 21);
+        border-bottom: 2px solid rgb(82, 101, 77);
+      }
+      
+      .list-items:hover:before {
+        transform: scaleY(1.2);
+        opacity: 1;
+      }
+      
+      .list-items:after {
+        content: "";
+        background: rgb(109, 165, 76);
+        position: absolute;
+        top: 2;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: 0.6s;
+        transform: scale(0);
+        z-index: -1;
+      }
+      
+      .list-items:hover:after {
+        transform: scale(1);
+      }
+      
+      .list-items:hover {
+        color: #212121;
+      }
+      
+      

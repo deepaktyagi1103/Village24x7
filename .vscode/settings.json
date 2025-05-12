@@ -1,0 +1,7 @@
+{
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.experimental.updateImportsOnPaste": true,
+    "typescript.experimental.updateImportsOnPaste": true,
+    "CodeGPT.apiKey": "CodeGPT Plus Beta"
+}
