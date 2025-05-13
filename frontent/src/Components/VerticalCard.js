@@ -1,4 +1,4 @@
-mport React, { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from 'lucide-react';
 
@@ -29,10 +29,8 @@ const VerticalCard: React.FC<VerticalCardProps> = ({ loading, data = [] }) => {
 
   const handleAddToCart = async (e: React.MouseEvent, id: string) => {
     e.preventDefault();
-    const response = await addToCart(e, id);
-    if (response.success) {
-      fetchUserAddToCart();
-    }
+    await addToCart(e, id);
+    fetchUserAddToCart();
   };
 
   const getDiscountPercentage = (originalPrice: number, sellingPrice: number) => {
@@ -99,7 +97,7 @@ const VerticalCard: React.FC<VerticalCardProps> = ({ loading, data = [] }) => {
                   <span className="text-xs text-gray-500 ml-1">(120)</span>
                 </div>
                 
-                <h3 className="font-medium text-gray-800 text-ellipsis line-clamp-2 mb-1 hover:text-purple-600 transition-colors">
+                <h3 className="font-medium text-gray-800 text-ellipsis line-clamp-2 mb-1 hover:text-primary transition-colors">
                   {product.productName}
                 </h3>
                 
@@ -110,7 +108,7 @@ const VerticalCard: React.FC<VerticalCardProps> = ({ loading, data = [] }) => {
               
               <div className="mt-3">
                 <div className="flex items-baseline gap-2 mb-3">
-                  <p className="text-lg font-semibold text-purple-700">
+                  <p className="text-lg font-semibold text-emerald-600">
                     {displayINRCurrency(product.sellingPrice)}
                   </p>
                   <p className="text-sm text-gray-400 line-through">
@@ -119,7 +117,7 @@ const VerticalCard: React.FC<VerticalCardProps> = ({ loading, data = [] }) => {
                 </div>
                 
                 <button 
-                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-2.5 px-4 rounded-md flex items-center justify-center gap-2 shadow-sm transition-all duration-300"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white py-2.5 px-4 rounded-md flex items-center justify-center gap-2 shadow-sm transition-all duration-300"
                   onClick={(e) => handleAddToCart(e, product._id)}
                 >
                   <ShoppingCart className="w-4 h-4" />
