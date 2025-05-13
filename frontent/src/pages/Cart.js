@@ -3,15 +3,27 @@ import SummaryApi from "../common";
 import Context from "../context";
 import displayINRCurrency from "../helpers/displayCurrency";
 import { Minus, Plus, Trash, ShoppingCart, ShoppingBag, ArrowRight, Package } from "lucide-react";
-import axios from "axios";
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom';
 import { cn } from "../lib/utils";
-import { toast } from 'sonner'; // Ensure this import is correct
+import { toast } from 'sonner';
+
+interface CartItem {
+  _id: string;
+  quantity: number;
+  productId: {
+    _id: string;
+    productName: string;
+    category: string;
+    price: number;
+    sellingPrice: number;
+    productImage: string[];
+  };
+}
 
 const Cart = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<CartItem[]>([]);
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const context = useContext(Context);
     
     useEffect(() => {
@@ -29,11 +41,7 @@ const Cart = () => {
                 }
             } catch (error) {
                 console.error("Failed to load cart:", error);
-                toast({
-                    title: "Error",
-                    description: "Failed to load your cart. Please try again.",
-                    variant: "destructive",
-                });
+                toast.error("Failed to load your cart. Please try again.");
             } finally {
                 setLoading(false);
             }
@@ -41,7 +49,7 @@ const Cart = () => {
         loadCart();
     }, []);
 
-    const updateQuantity = async (id, qty, type) => {
+    const updateQuantity = async (id: string, qty: number, type: "increase" | "decrease") => {
         const newQty = type === "increase" ? qty + 1 : qty - 1;
         if (newQty < 1) return;
 
@@ -59,6 +67,7 @@ const Cart = () => {
                         item._id === id ? { ...item, quantity: newQty } : item
                     )
                 );
+                context.fetchUserAddToCart();
                 toast.success("Cart updated successfully");
             }
         } catch (error) {
@@ -67,7 +76,7 @@ const Cart = () => {
         }
     };
 
-    const deleteCartProduct = async (id) => {
+    const deleteCartProduct = async (id: string) => {
         try {
             const response = await fetch(SummaryApi.deleteCartProduct.url, {
                 method: SummaryApi.deleteCartProduct.method,
@@ -88,7 +97,7 @@ const Cart = () => {
     };
 
     const loadRazorpay = () =>
-        new Promise((resolve) => {
+        new Promise<boolean>((resolve) => {
             if (window.Razorpay) {
                 resolve(true);
                 return;
@@ -115,7 +124,7 @@ const Cart = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ amount: grandTotal }) // 🟢 grandTotal is picked from scope
+                body: JSON.stringify({ amount: grandTotal })
             });
     
             if (!response.ok) {
@@ -135,14 +144,13 @@ const Cart = () => {
             const { order } = result;
     
             const options = {
-                key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+                key: "rzp_test_your_key_here", // Replace with actual key from env
                 amount: order.amount,
                 currency: order.currency,
                 name: "Village 24x7",
                 description: "Order Payment",
                 order_id: order.id,
-                handler: async function (response) {
-                    // ✅ On payment success
+                handler: async function (response: any) {
                     try {
                         const verify = await fetch(SummaryApi.verifyPayment.url, {
                             method: "POST",
@@ -154,8 +162,8 @@ const Cart = () => {
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_signature: response.razorpay_signature,
-                                items: CartItemSkeleton,          // 🟢 cartItems picked from scope
-                                totalPrice: grandTotal     // 🟢 grandTotal picked from scope
+                                items: data,
+                                totalPrice: grandTotal
                             }),
                         });
     
@@ -180,7 +188,7 @@ const Cart = () => {
                     contact: "9999999999",
                 },
                 theme: {
-                    color: "#F37254",
+                    color: "#8B5CF6",
                 },
                 modal: {
                     ondismiss: function () {
@@ -190,6 +198,7 @@ const Cart = () => {
                 },
             };
     
+            // @ts-ignore
             const razorpay = new window.Razorpay(options);
             razorpay.open();
     
@@ -200,12 +209,6 @@ const Cart = () => {
         }
     };
     
-    
-        
-        
-        
-        
-
     const totalQty = data.reduce((prev, curr) => prev + curr.quantity, 0);
     const totalPrice = data.reduce(
         (prev, curr) => prev + curr.quantity * curr?.productId?.sellingPrice,
@@ -407,7 +410,7 @@ const Cart = () => {
                                 
                                 <button
                                     className="w-full mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-md font-medium hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all flex items-center justify-center"
-                                    onClick={() => handlePayment(grandTotal)}
+                                    onClick={handlePayment}
                                 >
                                     Proceed to Checkout
                                     <ArrowRight className="ml-2 h-4 w-4" />
